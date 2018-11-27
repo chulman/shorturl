@@ -1,4 +1,4 @@
-package com.chulm.test.testcase;
+package com.chulm.test.testcase.function;
 
 import com.chulm.shorturl.config.JedisConfig;
 import com.chulm.shorturl.config.LettuceConfig;
@@ -13,15 +13,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {LettuceConfig.class, JedisConfig.class})
-public class RedisLibraryTimeCheck_test {
+public class RedisLibraryTimeCheck_Test {
 
     @Autowired
     StatefulRedisConnection<String, String> lettuceConnection;
     @Autowired
     private RedisTemplate<String, Object> jedisTemplate;
 
-
-    private int count = 10000;
+    private int count = 1000;
 
     @Test
     public void JedisSave() {

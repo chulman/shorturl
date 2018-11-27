@@ -33,15 +33,15 @@ dependencies {
     //redis
     compile('org.springframework.boot:spring-boot-starter-data-redis')
     compile('biz.paluch.redis:lettuce:4.4.4.Final')
-    compile group: 'redis.clients', name: 'jedis', version: '2.9.0'
+    compile('redis.clients:jedis:2.9.0')
     //h2
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('javax.validation:validation-api')
     runtime('com.h2database:h2')
-    //lombok
+    //lombok: need to plugin
     compileOnly('org.projectlombok:lombok')
     //netty
-    compile group: 'io.netty', name: 'netty-all', version: '4.1.22.Final'
+    compile('io.netty:netty-all:4.1.22.Final')
     //test
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }

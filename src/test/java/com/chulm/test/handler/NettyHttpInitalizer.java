@@ -3,6 +3,8 @@ package com.chulm.test.handler;
 
 import javax.net.ssl.SSLException;
 
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import org.apache.logging.log4j.message.Message;
 
 import io.netty.channel.ChannelInitializer;
@@ -49,6 +51,7 @@ public class NettyHttpInitalizer extends ChannelInitializer<SocketChannel>{
         //chunked 된 응답을 집계하는 코덱
 //        p.addLast("chunked",new HttpObjectAggregator(1048576));
 //		// convert to HTTP Response
+        p.addLast("LogginHandler", new LoggingHandler(LogLevel.INFO));
         p.addLast("codec",new HttpClientCodec());
         p.addLast(new NettyHttpHandler(group, sc));
     }

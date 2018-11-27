@@ -1,0 +1,6 @@
+FROM java:openjdk-8-jdk
+
+WORKDIR /program/bootapp
+ADD build/libs/app.jar app.jar
+
+CMD ["/bin/bash", "-c", "exec java -Dspring.profiles.active=local $JAVA_OPTS -jar app.jar >> /logs/bootapp/app.log 2>&1"]

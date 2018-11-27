@@ -1,27 +1,23 @@
 package com.chulm.test.handler;
 
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.http.HttpContent;
-import io.netty.handler.codec.http.HttpObject;
-import io.netty.handler.codec.http.HttpResponse;
-import io.netty.handler.codec.http.HttpUtil;
-import io.netty.handler.codec.http.LastHttpContent;
+import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.multipart.HttpPostRequestEncoder;
 import io.netty.util.CharsetUtil;
 
 public class NettyHttpHandler extends SimpleChannelInboundHandler<HttpObject> {
 
     private EventLoopGroup group;
     private SocketChannel sc;
-    private int count = 0;
+    private String code = "";
 
 
     public NettyHttpHandler(EventLoopGroup group, SocketChannel sc) {
         this.group = group;
         this.sc = sc;
     }
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
@@ -52,15 +48,35 @@ public class NettyHttpHandler extends SimpleChannelInboundHandler<HttpObject> {
             }
         }
         if (msg instanceof HttpContent) {
-            count++;
             HttpContent content = (HttpContent) msg;
-            System.err.println(count + ". create url = " + content.content().toString(CharsetUtil.UTF_8));
+
+            code = content.content().toString(CharsetUtil.UTF_8);
+            System.err.println("result :" + code);
             System.err.flush();
 
             if (content instanceof LastHttpContent) {
 //				System.err.println("} END OF CONTENT");
+
             }
         }
+    }
+
+    public void redirectRequest(String shortUrl) {
+        HttpRequest request = null;
+        HttpPostRequestEncoder postRequestEncoder = null;
+
+        request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, shortUrl);
+        request.headers().set(HttpHeaderNames.HOST, sc.remoteAddress().getHostName() + ":" + sc.remoteAddress().getPort());
+        request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+
+        ChannelFuture future = sc.pipeline().channel().writeAndFlush(request);
+
+        future.addListener(new ChannelFutureListener() {
+            @Override
+            public void operationComplete(ChannelFuture future) throws Exception {
+
+            }
+        });
     }
 
     @Override

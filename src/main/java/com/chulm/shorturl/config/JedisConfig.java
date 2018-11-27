@@ -77,7 +77,9 @@ public class JedisConfig {
         return stringRedisTemplate;
     }
 
-
+    /*
+     * 컨테이너에서 객체를 제거하기 전에 해야할 작업을 수행하기 위해 사용한다.
+     */
     @PreDestroy
     public void cleanRedis() {
         jedisConnectionFactory().getConnection().flushDb();
