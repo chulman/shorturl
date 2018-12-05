@@ -2,31 +2,34 @@ version: "2.1"
 
 services:
   redis:
-    image: 'bitnami/redis:latest'
+    image: 'redis:latest'
+    container_name: redis
     environment:
-    - ALLOW_EMPTY_PASSWORD=yes
+      - ALLOW_EMPTY_PASSWORD=yes
     ports:
-    - '6379:6379'
+      - '6379:6379'
     volumes:
-    - /path/to/redis-persistence:/bitnami/redis/data
-    - DISABLE_COMMANDS=CONFIG
+      - /Users/chul/redis/data:/redis/data
+      - DISABLE_COMMANDS=CONFIG
+    restart: always
 
-    app:
-      build:
-        context: ./
-        dockerfile: dockerfile-dev
-      image: chulm/shorturl/app:latest
-      environment:
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: chulm/shorturl/app:latest
+    environment:
       - SPRING_PROFILE=local
       - JVM_MEMORY=-Xmx4g -Xms4g -XX:MetaspaceSize=200m
-      ports:
+    ports:
       - 8080:8080
-      healthcheck:
-        test: ["CMD", "curl", "-f", "http://localhost:8080/"]
-        interval: 30s
-        timeout: 60s
-        retries: 15
-      links:
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 60s
+      retries: 15
+    links:
       - redis:redis
-      depends_on:
-        redis:
+    depends_on:
+      - redis
+
