@@ -17,17 +17,17 @@ import java.util.concurrent.TimeUnit;
 //http://kingbbode.tistory.com/25 [개발노트 - kingbbode]
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {JedisConfig.class})
-public class JedisFunc_Test {
+public class JedisFuncTest {
 
-    @Resource(name = "redisTemplate")
+    @Resource
     private ValueOperations<String, String> valueOperations;
-    @Resource(name = "redisTemplate")
+    @Resource
     private ListOperations<String, String> listOperations;
-    @Resource(name = "redisTemplate")
+    @Resource
     private HashOperations<String, String, String> hashOperations;
-    @Resource(name = "redisTemplate")
+    @Resource
     private SetOperations<String, String> setOperations;
-    @Resource(name = "redisTemplate")
+    @Resource
     private ZSetOperations<String, String> zSetOperations;
 
 

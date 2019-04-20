@@ -1,13 +1,20 @@
 package com.chulm.shorturl.controller.web;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
-@RestController
+import javax.servlet.http.HttpServletResponse;
+
+@Controller
 public class HomeController {
 
-    @RequestMapping("/")
-    public String home() {
-        return "home";
+    @GetMapping("/")
+    public String home(ModelAndView modelAndView, HttpServletResponse resp) {
+        if(!(resp.getHeaders(HttpHeaders.LOCATION) != null) && resp.getStatus() == 301 ){
+            modelAndView.addObject("link",resp.getHeaders(HttpHeaders.LOCATION));
+        }
+        return "index";
     }
 }

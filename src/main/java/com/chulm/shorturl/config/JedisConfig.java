@@ -1,7 +1,6 @@
 package com.chulm.shorturl.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
 
+@Profile("local")
 @Configuration
 public class JedisConfig {
 
@@ -24,11 +24,11 @@ public class JedisConfig {
     String password;
 
 
-    private @Value("${spring.redis.pool.max-idle}")
+    private @Value("${spring.jedis.pool.max-idle}")
     int maxIdle;
-    private @Value("${spring.redis.pool.min-idle}")
+    private @Value("${spring.jedis.pool.min-idle}")
     int minIdle;
-    private @Value("${spring.redis.pool.max-wait}")
+    private @Value("${spring.jedis.pool.max-wait}")
     long maxWait;
 
     @Bean

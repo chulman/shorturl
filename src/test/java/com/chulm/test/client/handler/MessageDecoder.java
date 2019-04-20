@@ -1,4 +1,4 @@
-package com.chulm.test.handler;
+package com.chulm.test.client.handler;
 
 
 import io.netty.buffer.ByteBuf;

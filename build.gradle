@@ -33,19 +33,24 @@ repositories {
 }
 
 dependencies {
+    compile('org.springframework.boot:spring-boot-starter-mustache')
     compile('org.springframework.boot:spring-boot-starter-web')
     //redis
     compile('org.springframework.boot:spring-boot-starter-data-redis')
+//    compile('org.springframework.boot:spring-boot-starter-data-redis-reactive')
     compile('biz.paluch.redis:lettuce:4.4.4.Final')
     compile('redis.clients:jedis:2.9.0')
     //h2
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('javax.validation:validation-api')
+
+    runtime('mysql:mysql-connector-java')
     runtime('com.h2database:h2')
     //lombok: need to plugin
     compileOnly('org.projectlombok:lombok')
     //netty
     compile('io.netty:netty-all:4.1.22.Final')
+    compile('io.reactivex.rxjava2:rxjava:2.2.2')
     //test
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('org.springframework.restdocs:spring-restdocs-mockmvc:2.0.2.RELEASE')

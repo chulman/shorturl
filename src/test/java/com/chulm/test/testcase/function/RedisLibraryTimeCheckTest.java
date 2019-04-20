@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {LettuceConfig.class, JedisConfig.class})
-public class RedisLibraryTimeCheck_Test {
+public class RedisLibraryTimeCheckTest {
 
     @Autowired
     StatefulRedisConnection<String, String> lettuceConnection;

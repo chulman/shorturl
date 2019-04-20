@@ -17,14 +17,8 @@ public class V1_ShortUrlController {
     @Autowired
     private ShortUrlService shortUrlService;
 
-
-    @RequestMapping(value = "/{code}", method = RequestMethod.GET)
+    @GetMapping(value = "/{code}")
     public CachedUrl getShortUrl_path(@PathVariable @Pattern(regexp = RegexUtil.NUMERIC_AND_ALPHABETIC_REGEX) String code) {
-        return shortUrlService.get(code);
-    }
-
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public CachedUrl getShortUrl_query(@RequestParam @Pattern(regexp = RegexUtil.NUMERIC_AND_ALPHABETIC_REGEX) String code) {
         return shortUrlService.get(code);
     }
 }

@@ -1,9 +1,7 @@
 package com.chulm.test.client;
 
 
-import java.util.UUID;
-
-import com.chulm.test.handler.NettyHttpInitalizer;
+import com.chulm.test.client.handler.NettyHttpInitalizer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;

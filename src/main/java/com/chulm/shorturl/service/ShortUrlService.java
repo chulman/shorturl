@@ -2,8 +2,8 @@ package com.chulm.shorturl.service;
 
 import com.chulm.shorturl.domain.model.CachedUrl;
 import com.chulm.shorturl.domain.model.ShortUrl;
-import com.chulm.shorturl.domain.respository.ShortUrlCacheRepository;
-import com.chulm.shorturl.domain.respository.UrlRepository;
+import com.chulm.shorturl.domain.repository.ShortUrlCacheRepository;
+import com.chulm.shorturl.domain.repository.UrlRepository;
 import com.chulm.shorturl.util.Base62Codec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class ShortUrlService {
@@ -21,19 +21,19 @@ public class ShortUrlService {
 
     @Autowired
     ShortUrlCacheRepository cacheRepository;
-
-    /* Interface를 상속받는 여러 객체를 다른 이름으로 지정가능 */
-    @Resource(name = "urlRepository")
+    @Autowired
     UrlRepository urlRepository;
 
     public CachedUrl get(String code) {
         return validate(code);
     }
 
-    public CachedUrl saveDB(String url) {
-        ShortUrl shortUrl = urlRepository.save(new ShortUrl(url, HttpStatus.MOVED_PERMANENTLY.value()));
+    public CachedUrl getAndSave(String url) {
+        ShortUrl shortUrl = urlRepository.findByUrl(url);
+        if(shortUrl ==null){
+            shortUrl = urlRepository.save(new ShortUrl(url, HttpStatus.MOVED_PERMANENTLY.value()));
+        }
         logger.info("saved linked ShortUrl {}", shortUrl.toString());
-
         return cacheRepository.setCachedShortUrl(shortUrl);
     }
 
@@ -53,8 +53,8 @@ public class ShortUrlService {
             //find db
             long id = Base62Codec.decode(code);
             ShortUrl shortUrl = urlRepository.findById(id).orElse(null);
-
             // set and return cache
+
             return cacheRepository.setCachedShortUrl(shortUrl);
         }
     }

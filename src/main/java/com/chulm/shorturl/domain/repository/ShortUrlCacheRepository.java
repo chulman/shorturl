@@ -1,4 +1,4 @@
-package com.chulm.shorturl.domain.respository;
+package com.chulm.shorturl.domain.repository;
 
 import com.chulm.shorturl.domain.model.CachedUrl;
 import com.chulm.shorturl.domain.model.ShortUrl;
@@ -46,6 +46,9 @@ public class ShortUrlCacheRepository {
 
     public CachedUrl setCachedShortUrl(ShortUrl shortUrl) {
 
+        if(shortUrl == null){
+            return null;
+        }
         String code = Base62Codec.encode((int) shortUrl.getId());
 
         CachedUrl cachedShortUrl = new CachedUrl();
