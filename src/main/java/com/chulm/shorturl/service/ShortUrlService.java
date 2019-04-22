@@ -28,7 +28,7 @@ public class ShortUrlService {
         return validate(code);
     }
 
-    public CachedUrl getAndSave(String url) {
+    public CachedUrl getOrSave(String url) {
         ShortUrl shortUrl = urlRepository.findByUrl(url);
         if(shortUrl ==null){
             shortUrl = urlRepository.save(new ShortUrl(url, HttpStatus.MOVED_PERMANENTLY.value()));
@@ -54,7 +54,7 @@ public class ShortUrlService {
             long id = Base62Codec.decode(code);
             ShortUrl shortUrl = urlRepository.findById(id).orElse(null);
             // set and return cache
-
+            logger.info("not found cached code = {} ", id);
             return cacheRepository.setCachedShortUrl(shortUrl);
         }
     }

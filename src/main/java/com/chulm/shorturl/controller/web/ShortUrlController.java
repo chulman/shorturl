@@ -5,16 +5,23 @@ import com.chulm.shorturl.domain.model.ShortUrl;
 import com.chulm.shorturl.exception.ResourceNotFoundException;
 import com.chulm.shorturl.service.ShortUrlService;
 import com.chulm.shorturl.util.RegexUtil;
+import lombok.extern.java.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
 @RestController
 public class ShortUrlController {
+
 
     @Value("${short-url.service.url}")
     private String domain;
@@ -23,10 +30,9 @@ public class ShortUrlController {
     private ShortUrlService shortUrlService;
 
 
-    @RequestMapping(value = "/get", method = RequestMethod.GET)
-    public ResponseEntity redirect(@RequestParam @Pattern(regexp = RegexUtil.NUMERIC_AND_ALPHABETIC_REGEX) String url) {
-        CachedUrl cachedUrl = shortUrlService.getAndSave(url);
-        System.err.println("aaa");
+    @RequestMapping(value = "/{code}", method = RequestMethod.GET)
+    public ResponseEntity redirect(@PathVariable @Pattern(regexp = RegexUtil.NUMERIC_AND_ALPHABETIC_REGEX) String code) {
+        CachedUrl cachedUrl = shortUrlService.get(code);
         if (cachedUrl != null) {
             ShortUrl shortUrl = cachedUrl.getShortUrl();
 
@@ -37,7 +43,7 @@ public class ShortUrlController {
                 return new ResponseEntity(headers, status);
             }
         }else {
-            throw new ResourceNotFoundException("Page not found: /" + url);
+            throw new ResourceNotFoundException("Page not found: /" + code);
         }
         return null;
     }

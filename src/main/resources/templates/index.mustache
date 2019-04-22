@@ -1,54 +1,57 @@
 {{> layout/header}}
 <div id="header" class="container">
     <header class="header">
-        <h1>ShortURL</h1>
-        <p class="lead">Short-URL API</p>
+        <p></p>
+            <h1 style="text-align: center">SHORTEN</h1>
+            <p></p>
     </header><!-- /.header -->
 </div>
 
 <div class="container">
     <section class="row">
         <div class="col-md-12 form-group url-form">
-            <form action="/get" method="get">
+            <!--<form action="/save/url" method="post">-->
                 <div class="row">
                     <div class="col-lg-10 input-group url-input">
                         <input id="link" name="url" type="text" class="form-control input-lg" placeholder="Paste a link here">
                         <span class="input-group-btn">
-                  <button class="btn btn-default btn-lg" type="submit">
+                  <button class="btn btn-default btn-lg" id="shorten-btn">
                     <span class="glyphicon glyphicon-link"></span>
                     Shorten
                   </button>
-                  <button class="btn btn-default btn-lg" data-clipboard-target="#link" type="button">
-                    <span class="glyphicon glyphicon-share-alt"></span>
+                  <button class="btn btn-default btn-lg btn-copy" data-clipboard-target="#link" type="button">
+                    <span class="glyphicon glyphicon-share-alt" data-clipboard-target="#link"></span>
                     Copy
                   </button>
                 </span>
                     </div><!-- /.input-group -->
                 </div><!--/.row-->
-                <div class="row-data-group">
-                    <span>
-                        {{#link}}
-                            <a>{{link}}</a>
-                        {{/link}}
-                        <!--<h2><a></a></h2>-->
-                    </span>
-                    <!--
-                    <div class='col-lg-9 input-group date url-input flex-item' id='datetimepicker1'>
-                        <input id="start_date" name="start_date" type="date" class="form-control" >
-                        <span class="input-group-addon">
-                  <span class="glyphicon glyphicon-calendar"></span>
-              </span>
-                    </div>
-                    <div class='col-lg-9 input-group date url-input flex-item' id='datetimepicker2'>
-                        <input id="end_date" name="end_date" type="date" class="form-control" >
-                        <span class="input-group-addon">
-                  <span class="glyphicon glyphicon-calendar"></span>
-              </span>
-                    </div>
-                   -->
-                </div><!--/.row-->
-            </form>
+                <div class="row">
+                    <div class="result-message"></div>
+                </div>
+            <!--</form>-->
+            <div class="row-data-group">
+                <hr>
+                    <div class="cached-url-row"></div>
+            </div>
         </div><!--/.form-group-->
+
+
+
+        <!--
+        <div class='col-lg-9 input-group date url-input flex-item' id='datetimepicker1'>
+            <input id="start_date" name="start_date" type="date" class="form-control" >
+            <span class="input-group-addon">
+      <span class="glyphicon glyphicon-calendar"></span>
+  </span>
+        </div>
+        <div class='col-lg-9 input-group date url-input flex-item' id='datetimepicker2'>
+            <input id="end_date" name="end_date" type="date" class="form-control" >
+            <span class="input-group-addon">
+      <span class="glyphicon glyphicon-calendar"></span>
+  </span>
+        </div>
+       -->
 
     </section>
 </div><!-- /.container -->
