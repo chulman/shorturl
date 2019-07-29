@@ -14,7 +14,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.servlet.ModelAndView;
+import rx.Observable;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
@@ -31,20 +33,20 @@ public class ShortUrlController {
 
 
     @RequestMapping(value = "/{code}", method = RequestMethod.GET)
-    public ResponseEntity redirect(@PathVariable @Pattern(regexp = RegexUtil.NUMERIC_AND_ALPHABETIC_REGEX) String code) {
-        CachedUrl cachedUrl = shortUrlService.get(code);
-        if (cachedUrl != null) {
-            ShortUrl shortUrl = cachedUrl.getShortUrl();
+    public DeferredResult<ResponseEntity> redirect(@PathVariable @Pattern(regexp = RegexUtil.NUMERIC_AND_ALPHABETIC_REGEX) String code) {
+        Observable observable = shortUrlService.get(code)
+                                               .map(cachedUrl -> {
+                                                   HttpStatus status = HttpStatus.valueOf(cachedUrl.getShortUrl().getStatus());
+                                                   HttpHeaders headers = new HttpHeaders();
+                                                   headers.add(HttpHeaders.LOCATION, cachedUrl.getShortUrl().getLink());
+                                                   return new ResponseEntity(headers, status);
+                                               });
+        return toDeferredResult(observable);
+    }
 
-            if (shortUrl != null) {
-                HttpStatus status = HttpStatus.valueOf(shortUrl.getStatus());
-                HttpHeaders headers = new HttpHeaders();
-                headers.add(HttpHeaders.LOCATION, shortUrl.getLink());
-                return new ResponseEntity(headers, status);
-            }
-        }else {
-            throw new ResourceNotFoundException("Page not found: /" + code);
-        }
-        return null;
+    private static <T> DeferredResult<T> toDeferredResult(Observable<T> observable) {
+        DeferredResult<T> deferredResult = new DeferredResult<>();
+        observable.subscribe(deferredResult::setResult, deferredResult::setErrorResult);
+        return deferredResult;
     }
 }

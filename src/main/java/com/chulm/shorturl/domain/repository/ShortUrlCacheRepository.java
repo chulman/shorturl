@@ -1,72 +1,58 @@
 package com.chulm.shorturl.domain.repository;
 
-import com.chulm.shorturl.domain.model.CachedUrl;
 import com.chulm.shorturl.domain.model.ShortUrl;
 import com.chulm.shorturl.util.Base62Codec;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lambdaworks.redis.api.StatefulRedisConnection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import rx.Observable;
 
 import java.io.IOException;
+import java.util.Objects;
 
-@Component
+@Slf4j
+@AllArgsConstructor
 public class ShortUrlCacheRepository {
-
-    @Value("${spring.redis.default.expire-time-seconds}")
-    private long expireTimeSeconds;
-
-    private Logger logger = LoggerFactory.getLogger(ShortUrlCacheRepository.class);
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String NAMESPACE = "short-url";
     private static final String VERSION = "v1";
 
-    @Autowired
     private StatefulRedisConnection<String, String> redisConnection;
+    private final long expireTimeSeconds;
 
 
-    public CachedUrl get(String code) throws IOException {
-        long id = Base62Codec.decode(code);
-        String value = redisConnection.sync().get(getKey(id));
-
-        if(value == null || value.equals("")){
-            return null;
-        }
-        CachedUrl cachedUrl = new CachedUrl();
-        cachedUrl.setCode(code);
-        cachedUrl.setShortUrl(parse(value));
-
-        return cachedUrl;
+    public Observable<ShortUrl> get(String code) {
+        return redisConnection.reactive()
+                              .get(getKey(Base62Codec.decode(code)))
+                              .doOnNext(s -> log.info("extract cache = {}", s))
+                              .filter(Objects::nonNull)
+                              .map(this::toShortUrl);
     }
 
-    public CachedUrl setCachedShortUrl(ShortUrl shortUrl) {
+    public Observable<String> setCachedShortUrl(ShortUrl shortUrl) {
+        return redisConnection.reactive()
+                              .setex(getKey(shortUrl.getId()),
+                                            expireTimeSeconds,
+                                            shortUrlToString(shortUrl))
+                              .doOnNext(s -> log.info("cache hit = {}", s));
+    }
 
-        if(shortUrl == null){
-            return null;
-        }
-        String code = Base62Codec.encode((int) shortUrl.getId());
-
-        CachedUrl cachedShortUrl = new CachedUrl();
-        cachedShortUrl.setShortUrl(shortUrl);
-        cachedShortUrl.setCode(code);
-
-        String value = null;
+    private String shortUrlToString(ShortUrl shortUrl){
         try {
-            value = OBJECT_MAPPER.writeValueAsString(shortUrl);
-            redisConnection.sync().setex(getKey(shortUrl.getId()), expireTimeSeconds, value);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            return OBJECT_MAPPER.writeValueAsString(shortUrl);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return cachedShortUrl;
     }
 
-    private ShortUrl parse(String value) throws IOException {
-        return OBJECT_MAPPER.readValue(value, ShortUrl.class);
+    private ShortUrl toShortUrl(String value){
+        try {
+            return OBJECT_MAPPER.readValue(value, ShortUrl.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String getKey(long id) {
