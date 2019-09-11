@@ -1,5 +1,6 @@
 package com.chulm.shorturl.config;
 
+import com.chulm.shorturl.domain.repository.ShortUrlCacheRepository;
 import com.lambdaworks.redis.RedisClient;
 import com.lambdaworks.redis.RedisURI;
 import com.lambdaworks.redis.api.StatefulRedisConnection;

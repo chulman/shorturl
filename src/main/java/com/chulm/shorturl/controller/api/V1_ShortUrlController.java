@@ -24,6 +24,7 @@ public class V1_ShortUrlController {
 
     @GetMapping(value = "/get/url")
     public CachedUrl getOrSave(@Valid @RequestParam @Pattern(regexp = RegexUtil.URL_REGEX) String url) {
+        System.err.println(url);
         return shortUrlService.getOrSave(url);
     }
 }

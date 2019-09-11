@@ -48,8 +48,6 @@ dependencies {
     runtime('com.h2database:h2')
     //lombok: need to plugin
     compileOnly('org.projectlombok:lombok')
-    //netty
-    compile('io.netty:netty-all:4.1.22.Final')
     compile('io.reactivex.rxjava2:rxjava:2.2.2')
     //test
     testCompile('org.springframework.boot:spring-boot-starter-test')

@@ -1,3 +1,11 @@
+# ShortURL
+- JPA
+- redis
 
 
-###TODO - convert to reactive web.
+
+# Reactive ShortURL
+
+- rxjava2
+- JDBC with rxjava
+- redis-reactive

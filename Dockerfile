@@ -1,13 +1,20 @@
 FROM java:openjdk-8-jdk
 
-WORKDIR /shorturl/program/bootapp
+MAINTAINER cmchoi, chlcjfals0122@gmail.com
+LABEL com.example.version = "0.0.1-SNAPSHOT"
+
+ENV JAVA_OPTS -Xms1024m -Xmx1024m -XX:+HeapDumpOnOutOfMemoryError
+
+WORKDIR /program/bootapp
 ADD build/libs/app.jar app.jar
 
-CMD ["/bin/bash", "-c", "exec java -Dspring.profiles.active=local $JAVA_OPTS -jar app.jar"]
-#CMD ["/bin/bash", "-c", "exec java -Dspring.profiles.active=local $JAVA_OPTS -jar app.jar >> /Users/chul/log/shorturl.log 2>&1"]
+EXPOSE 8080
+
+#ENTRYPOINT ["/bin/bash", "-c", "exec java $SPRING_OPTS $JAVA_OPTS -jar app.jar" ]
+
+CMD ["/bin/bash", "-c", "exec java $SPRING_OPTS $JAVA_OPTS -jar app.jar" ]
+#CMD ["/bin/bash", "-c", "exec java -Dspring.profiles.active=local $JAVA_OPTS -jar app.jar >> /Users/chul/log/app.log 2>&1"]
 
 
-# ./gradlew bootJar
-# docker build -t  chulm/shorturl/app:latest ./
-# docker run --name=redis -d -p 6379:6379 redis:latest
-# docker run --name=shorturl-app -p 8080:8080 --link redis:redis -e JAVA_OPTS="-Dshort-url.service.url=localhost:8080" chulm/shorturl/app:latest
+
+# docker run --name=myapp -p 8080:8080 --link redis:redis -e SPRING_OPTS="-Dspring.profiles.active=local" chulm/myapp:latest

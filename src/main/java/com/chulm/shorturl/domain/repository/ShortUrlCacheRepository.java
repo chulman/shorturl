@@ -6,25 +6,22 @@ import com.chulm.shorturl.util.Base62Codec;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lambdaworks.redis.api.StatefulRedisConnection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+@Slf4j
 @Component
 public class ShortUrlCacheRepository {
 
-    @Value("${spring.redis.default.expire-time-seconds}")
-    private long expireTimeSeconds;
-
-    private Logger logger = LoggerFactory.getLogger(ShortUrlCacheRepository.class);
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String NAMESPACE = "short-url";
     private static final String VERSION = "v1";
+
+    private long expireTimeSeconds = 60l;
 
     @Autowired
     private StatefulRedisConnection<String, String> redisConnection;
@@ -71,5 +68,9 @@ public class ShortUrlCacheRepository {
 
     private String getKey(long id) {
         return String.format("%s-%s(%d)", NAMESPACE, VERSION, id);
+    }
+
+    public void setExpireTimeSeconds(long expireTimeSeconds) {
+        this.expireTimeSeconds = expireTimeSeconds;
     }
 }
