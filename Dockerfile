@@ -12,8 +12,8 @@ EXPOSE 8080
 
 #ENTRYPOINT ["/bin/bash", "-c", "exec java $SPRING_OPTS $JAVA_OPTS -jar app.jar" ]
 
-CMD ["/bin/bash", "-c", "exec java $SPRING_OPTS $JAVA_OPTS -jar app.jar" ]
-#CMD ["/bin/bash", "-c", "exec java -Dspring.profiles.active=local $JAVA_OPTS -jar app.jar >> /Users/chul/log/app.log 2>&1"]
+#CMD ["/bin/bash", "-c", "exec java $SPRING_OPTS $JAVA_OPTS -jar app.jar" ]
+CMD ["/bin/bash", "-c", "exec java -Dspring.profiles.active=production $JAVA_OPTS -jar app.jar"]
 
 
 

@@ -41,7 +41,6 @@ services:
       dockerfile: Dockerfile
     image: chulm/shorturl/app:latest
     environment:
-      - SPRING_PROFILE=production
       - JVM_MEMORY=-Xmx4g -Xms4g -XX:MetaspaceSize=200m
     ports:
       - 8080:8080
